@@ -121,7 +121,7 @@ func (tb *treeBuilder) buildTree(module string, graph map[string][]string, visit
 			continue
 		}
 
-		// this is a recursive call to build the tree for the dependency
+		// recursively build the tree for the dependency
 		child := tb.buildTree(dep, graph, visited, path)
 		artifact.Dependencies = append(artifact.Dependencies, child)
 	}

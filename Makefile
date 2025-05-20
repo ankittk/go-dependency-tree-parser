@@ -1,19 +1,32 @@
 BINARY_NAME = dtree
 BINARY_DIR = bin
 
-.PHONY: all
+.PHONY: all clean test build
+
 all: build
 
-.PHONY: build
-build:
-	@echo "Building $(BINARY_NAME)..."
-	@mkdir -p $(BINARY_DIR)
-	@go build -o $(BINARY_DIR)/$(BINARY_NAME) main.go
-	@echo "Build completed: $(BINARY_DIR)/$(BINARY_NAME)"
-
-.PHONY: clean
 clean:
 	@echo "Cleaning up..."
 	@rm -rf $(BINARY_DIR)
-	@rm -rf output.json
+	@rm -f output.json
 	@echo "Clean done."
+
+test:
+	@echo "Running tests..."
+	@go test -v ./...
+	@echo "Tests completed."
+
+lint:
+	@echo "Running golangci-lint..."
+	@golangci-lint run ./...
+	@echo "Linting completed."
+
+build:
+	@echo "Building $(BINARY_NAME)..."
+	@mkdir -p $(BINARY_DIR)
+	@go build -o $(BINARY_DIR)/$(BINARY_NAME) .
+	@echo "Build completed: $(BINARY_DIR)/$(BINARY_NAME)"
+
+.PHONY: run
+run: build
+	@./$(BINARY_DIR)/$(BINARY_NAME) parse $(repo) $(tag)

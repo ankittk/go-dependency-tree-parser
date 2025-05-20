@@ -66,6 +66,12 @@ Example:
 ```bash
 ./bin/dtree parse github.com/etcd-io/etcd v3.6.0
 ```
+OR
+You can also use the `make` command to run the tool:
+
+```bash
+make run repo=github.com/etcd-io/etcd tag=v3.6.0
+```
 
 ---
 
@@ -75,6 +81,14 @@ Run unit tests with:
 
 ```bash
 make test
+```
+
+
+### Linting
+To run linters:
+
+```bash
+make lint
 ```
 
 ---
@@ -102,22 +116,22 @@ make clean
 ## Project Structure
 
 ```text
-├── cmd/                   # Cobra CLI commands
-│   ├── dtree.go
-│   └── parse.go
-├── internal/
-│   ├── github/            # Git clone and checkout logic
-│   │   └── git.go
-│   ├── parser/            # go.mod parsing logic
-│   │   └── modgraph.go
-│   └── tree/              # Dependency tree generation logic
-│       └── tree.go
-├── go.mod
-├── go.sum
-├── LICENSE
-├── main.go                # CLI entry point
-├── Makefile               # Build/test/clean targets
-├── output.json            # Sample JSON output
-└── README.md              # Project documentation
+├── cmd
+│   ├── dtree.go               # Command-line entry point logic
+│   └── parse.go               # Argument parsing or subcommand logic
+├── go.mod                     # Go module definition
+├── go.sum                     # Go dependencies checksums
+├── internal
+│   ├── github
+│   │   └── git.go             # GitHub repository handling (e.g., clone, checkout)
+│   ├── parser
+│   │   ├── modgraph.go        # go mod graph parsing logic
+│   │   └── modgraph_test.go   # Unit tests for modgraph.go
+│   └── tree
+│       ├── tree.go            # Core tree-building logic
+│       └── tree_test.go       # Unit tests for tree logic
+├── LICENSE                    # License file
+├── main.go                    # Main entry point for the application
+├── Makefile                   # Build, test, lint automation
+└── README.md                  # Project documentation
 ```
----
