@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: 'GitHub repo'
+        required: false
+      tag:
+        description: 'Version tag'
+        required: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      REPO: ${{ github.event.inputs.repo || 'github.com/etcd-io/etcd' }}
+      TAG: ${{ github.event.inputs.tag || 'v3.6.0' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v8
+        with:
+          version: v2.1
+
+      - name: Run Lint
+        run: make lint
+
+      - name: Run Tests
+        run: make test
+
+      - name: Run Project
+        run: make run repo=$REPO tag=$TAG
+
+      - name: Upload output.json artifact (only on main branch push)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-tree-output
+          path: output.json
